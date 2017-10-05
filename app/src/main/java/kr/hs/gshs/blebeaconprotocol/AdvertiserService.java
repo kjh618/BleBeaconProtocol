@@ -59,11 +59,29 @@ public class AdvertiserService extends Service {
 
     @Override
     public void onCreate() {
-        running = true;
-        initialize();
-        startAdvertising();
-        setTimeout();
         super.onCreate();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if(intent == null) {
+            return Service.START_STICKY;
+        } else {
+            processCommand(intent);
+
+            running = true;
+            initialize();
+            startAdvertising();
+            setTimeout();
+        }
+
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    String rawData;
+
+    private void processCommand(Intent intent) {
+        rawData = intent.getStringExtra("raw_data");
     }
 
     @Override
@@ -189,9 +207,13 @@ public class AdvertiserService extends Service {
          *  onStartFailure() method of an AdvertiseCallback implementation.
          */
 
+        byte[] rawByte = rawData.getBytes();
+        int part1 = 256 * rawByte[1] + rawByte[0];
+        byte[] part2 = new byte[24];
+        System.arraycopy(rawByte, 2, part2, 0, rawByte.length - 2);
         AdvertiseData.Builder dataBuilder = new AdvertiseData.Builder();
-        dataBuilder.addServiceUuid(Constants.Service_UUID);
-        dataBuilder.setIncludeDeviceName(true);
+        dataBuilder.addManufacturerData(part1, part2);
+        //dataBuilder.addServiceData(Constants.Service_UUID, part2);
 
         /* For example - this will cause advertising to fail (exceeds size limit) */
         //String failureData = "asdghkajsghalkxcjhfa;sghtalksjcfhalskfjhasldkjfhdskf";

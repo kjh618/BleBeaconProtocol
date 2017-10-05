@@ -16,16 +16,19 @@
 
 package kr.hs.gshs.blebeaconprotocol;
 
+import android.app.Activity;
 import android.bluetooth.le.AdvertiseCallback;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -101,7 +104,36 @@ public class AdvertiserFragment extends Fragment implements View.OnClickListener
         mSwitch = (Switch) view.findViewById(R.id.advertise_switch);
         mSwitch.setOnClickListener(this);
 
+        Button buttonData = (Button) view.findViewById(R.id.button_data);
+        buttonData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                show();
+            }
+        });
+
         return view;
+    }
+
+    private static final int DIALOG_REQUEST_CODE = 1234;
+
+    void show() {
+        DialogFragment dataFragment = new DataFragment();
+        dataFragment.setTargetFragment(this, DIALOG_REQUEST_CODE);
+        dataFragment.show(getFragmentManager(), "dialog");
+    }
+
+    String rawData;
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == DIALOG_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            rawData = data.getExtras().getString("raw_data");
+
+            Toast.makeText(getActivity(), rawData, Toast.LENGTH_LONG).show();
+        }
     }
 
     /**
@@ -159,8 +191,9 @@ public class AdvertiserFragment extends Fragment implements View.OnClickListener
      * Starts BLE Advertising by starting {@code AdvertiserService}.
      */
     private void startAdvertising() {
-        Context c = getActivity();
-        c.startService(getServiceIntent(c));
+        Intent intent = new Intent(getActivity(), AdvertiserService.class);
+        intent.putExtra("raw_data", rawData);
+        getActivity().startService(intent);
     }
 
     /**
