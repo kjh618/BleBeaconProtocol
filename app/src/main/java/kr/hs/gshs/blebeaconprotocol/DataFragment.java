@@ -46,6 +46,7 @@ public class DataFragment extends DialogFragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
                 selectedPacketType = packetTypes[position];
+                Toast.makeText(getActivity().getApplicationContext(), selectedPacketType, Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -55,9 +56,6 @@ public class DataFragment extends DialogFragment {
 
         ListView listViewData = (ListView) view.findViewById(R.id.listView_data);
         final DataAdapter dataAdapter = new DataAdapter();
-
-        dataAdapter.addItem(new DataItem(types[0], "Yay!"));
-        dataAdapter.addItem(new DataItem(types[1], "https://www.naver.com/"));
 
         listViewData.setAdapter(dataAdapter);
 
@@ -103,11 +101,11 @@ public class DataFragment extends DialogFragment {
                 Intent data = new Intent();
                 data.putExtra("packet_type", selectedPacketType);
 
-                DataItem[] temp = new DataItem[dataAdapter.getCount()];
+                ArrayList<DataItem> temp = new ArrayList<DataItem>(dataAdapter.getCount());
                 for(int i=0; i<dataAdapter.getCount(); ++i)
-                    temp[i] = (DataItem) dataAdapter.getItem(i);
+                    temp.add((DataItem) dataAdapter.getItem(i));
 
-                data.putExtra("data_items", temp);
+                data.putParcelableArrayListExtra("data_items", temp);
 
                 getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, data);
 

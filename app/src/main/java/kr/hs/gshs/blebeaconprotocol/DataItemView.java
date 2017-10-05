@@ -42,6 +42,6 @@ public class DataItemView extends LinearLayout{
 
     public void setData(String data) {
         textViewData.setText(data);
-        textViewLength.setText(data.length());
+        textViewLength.setText(String.valueOf(data.length() + 1));
     }
 }

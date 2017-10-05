@@ -123,16 +123,14 @@ public class AdvertiserFragment extends Fragment implements View.OnClickListener
         dataFragment.show(getFragmentManager(), "dialog");
     }
 
-    String rawData;
+    Intent result;
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == DIALOG_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            rawData = data.getExtras().getString("raw_data");
-
-            Toast.makeText(getActivity(), rawData, Toast.LENGTH_LONG).show();
+            result = data;
         }
     }
 
@@ -192,7 +190,8 @@ public class AdvertiserFragment extends Fragment implements View.OnClickListener
      */
     private void startAdvertising() {
         Intent intent = new Intent(getActivity(), AdvertiserService.class);
-        intent.putExtra("raw_data", rawData);
+        intent.putExtra("packet_type", result.getStringExtra("packet_type"));
+        intent.putParcelableArrayListExtra("data_items", result.getParcelableArrayListExtra("data_items"));
         getActivity().startService(intent);
     }
 

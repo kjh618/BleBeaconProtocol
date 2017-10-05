@@ -16,6 +16,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -38,7 +39,7 @@ public class AdvertiserService extends Service {
     public static boolean running = false;
 
     public static final String ADVERTISING_FAILED =
-        "com.example.android.bluetoothadvertisements.advertising_failed";
+        "kr.hs.gshs.blebeaconcontrol.advertising_failed";
 
     public static final String ADVERTISING_FAILED_EXTRA_CODE = "failureCode";
 
@@ -79,7 +80,7 @@ public class AdvertiserService extends Service {
     }
 
     String packetType;
-    DataItem[] dataItems;
+    DataItem[] dataItems = new DataItem[1];
 
     byte[] rawBytes = new byte[26];
 
@@ -88,9 +89,11 @@ public class AdvertiserService extends Service {
     }
 
     private void processIntent(Intent intent) {
-        packetType = intent.getStringExtra("raw_data");
-        dataItems = (DataItem[]) intent.getParcelableArrayExtra("data_items");
+        packetType = intent.getStringExtra("packet_type");
+        ArrayList<DataItem> temp = intent.getParcelableArrayListExtra("data_items");
+        dataItems = temp.toArray(dataItems);
         GenerateRawAdvertiseData();
+        Toast.makeText(getApplicationContext(), packetType, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -216,9 +219,9 @@ public class AdvertiserService extends Service {
          *  onStartFailure() method of an AdvertiseCallback implementation.
          */
 
-        int part1 = 256 * rawByte[1] + rawByte[0];
+        int part1 = 256 * rawBytes[1] + rawBytes[0];
         byte[] part2 = new byte[24];
-        System.arraycopy(rawByte, 2, part2, 0, rawByte.length - 2);
+        System.arraycopy(rawBytes, 2, part2, 0, rawBytes.length - 2);
         AdvertiseData.Builder dataBuilder = new AdvertiseData.Builder();
         dataBuilder.addManufacturerData(part1, part2);
         //dataBuilder.addServiceData(Constants.Service_UUID, part2);
