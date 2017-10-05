@@ -67,7 +67,7 @@ public class AdvertiserService extends Service {
         if(intent == null) {
             return Service.START_STICKY;
         } else {
-            processCommand(intent);
+            processIntent(intent);
 
             running = true;
             initialize();
@@ -78,10 +78,19 @@ public class AdvertiserService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    String rawData;
+    String packetType;
+    DataItem[] dataItems;
 
-    private void processCommand(Intent intent) {
-        rawData = intent.getStringExtra("raw_data");
+    byte[] rawBytes = new byte[26];
+
+    private void GenerateRawAdvertiseData() {
+        // complete this method
+    }
+
+    private void processIntent(Intent intent) {
+        packetType = intent.getStringExtra("raw_data");
+        dataItems = (DataItem[]) intent.getParcelableArrayExtra("data_items");
+        GenerateRawAdvertiseData();
     }
 
     @Override
@@ -207,7 +216,6 @@ public class AdvertiserService extends Service {
          *  onStartFailure() method of an AdvertiseCallback implementation.
          */
 
-        byte[] rawByte = rawData.getBytes();
         int part1 = 256 * rawByte[1] + rawByte[0];
         byte[] part2 = new byte[24];
         System.arraycopy(rawByte, 2, part2, 0, rawByte.length - 2);
