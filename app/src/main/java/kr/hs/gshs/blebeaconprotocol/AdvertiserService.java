@@ -87,41 +87,32 @@ public class AdvertiserService extends Service {
     // Generate raw AdvertiseData bytes
     byte[] rawBytes = new byte[26];
 
-    public enum PacketTypes { INFORMATION, ADVERTISEMENT, COUPON, CAUTION }
-    public enum DataTypes { TEXT_RLE, TEXT_HOF, TEXT_UNCOM, URL, GOOGL_URL, DEVICE_NAME, SERVICE_NAME}
-
-    public PacketTypes packettype = PacketTypes.valueOf(packetType);
-    public DataTypes datatype ;
+    public enum PacketTypes {INFORMATION, ADVERTISEMENT, COUPON, CAUTION}
+    public enum DataTypes {TEXT_RLE, TEXT_HOF, TEXT_UNCOM, URL, GOOGL_URL, DEVICE_NAME, SERVICE_NAME}
 
     private void GenerateRawAdvertiseData() {
-        // complete this method
         int totalDataLength = 0;
-        for(int i = 0; i < dataItems.length; ++i)
-        totalDataLength += dataItems[i].getLength() + 1;
-        if(totalDataLength >= 25){
-            // 예외 처리
-            Toast.makeText(getApplicationContext(),
-                    "Input Range Exceeded.",
-                    Toast.LENGTH_LONG).show();
-        }
-        else {
-            rawBytes[1] = (byte) packettype.ordinal();
-            for (int i = 0; i <= dataItems.length - 1; i++) {
-                int j=0;
-                datatype=DataTypes.valueOf(dataItems[i].getType());
-                rawBytes[2+j] = (byte) dataItems[i].getLength();
-                rawBytes[3+j] = (byte) datatype.ordinal();
-                byte[] dataBytes=dataItems[i].getData().getBytes();
-                for(int k=0;k<=dataItems[i].getLength()-1;k++)
-                {
-                    rawBytes[4+j+k]=dataBytes[k];
-                }
-                j=j+dataItems[i].getLength()+1;
+        for (int i = 0; i < dataItems.length; i++)
+            totalDataLength += dataItems[i].getLength() + 1;
 
+        if (totalDataLength > 25) {
+            Toast.makeText(getApplicationContext(), "Input Range Exceeded.", Toast.LENGTH_LONG).show();
+        } else {
+            PacketTypes packettype = PacketTypes.valueOf(packetType);
+            rawBytes[0] = (byte) packettype.ordinal();
 
+            int j = 0;
+            for (int i = 0; i < dataItems.length; i++) {
+                rawBytes[1 + j] = (byte) dataItems[i].getLength();
+
+                DataTypes datatype = DataTypes.valueOf(dataItems[i].getType());
+                rawBytes[2 + j] = (byte) datatype.ordinal();
+
+                byte[] dataBytes = dataItems[i].getData().getBytes();
+                for (int k = 0; k < dataItems[i].getLength() - 1; k++)
+                    rawBytes[3 + j + k] = dataBytes[k];
+                j += dataItems[i].getLength() + 1;
             }
-        }
-
         }
     }
 
@@ -131,7 +122,6 @@ public class AdvertiserService extends Service {
         ArrayList<DataItem> temp = intent.getParcelableArrayListExtra("data_items");
         dataItems = temp.toArray(dataItems);
         GenerateRawAdvertiseData();
-        Toast.makeText(getApplicationContext(), packetType, Toast.LENGTH_LONG).show();
     }
 
     @Override
