@@ -16,6 +16,7 @@
 
 package kr.hs.gshs.blebeaconprotocol;
 
+import android.bluetooth.le.ScanRecord;
 import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.os.SystemClock;
@@ -69,19 +70,19 @@ public class ScanResultAdapter extends BaseAdapter {
             view = mInflater.inflate(R.layout.listitem_scanresult, null);
         }
 
-        TextView deviceNameView = (TextView) view.findViewById(R.id.device_name);
-        TextView deviceAddressView = (TextView) view.findViewById(R.id.device_address);
-        TextView lastSeenView = (TextView) view.findViewById(R.id.last_seen);
+        TextView textViewPacketType = (TextView) view.findViewById(R.id.packet_type);
+        TextView textViewLastSeen = (TextView) view.findViewById(R.id.last_seen);
 
         ScanResult scanResult = mArrayList.get(position);
 
-        String name = scanResult.getDevice().getName();
-        if (name == null) {
-            name = mContext.getResources().getString(R.string.no_name);
-        }
-        deviceNameView.setText(name);
-        deviceAddressView.setText(scanResult.getDevice().getAddress());
-        lastSeenView.setText(getTimeSinceString(mContext, scanResult.getTimestampNanos()));
+        ScanRecord scanRecord = scanResult.getScanRecord();
+        byte[] rawBytes = scanRecord.getBytes();
+        String rawBytesString = "";
+        for(byte bt : rawBytes)
+            rawBytesString += String.valueOf((int) bt);
+
+        textViewPacketType.setText(rawBytesString);
+        textViewLastSeen.setText(getTimeSinceString(mContext, scanResult.getTimestampNanos()));
 
         return view;
     }

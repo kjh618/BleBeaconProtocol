@@ -112,7 +112,7 @@
     </LinearLayout>
 
     <ListView
-        android:id="@+id/listView_data"
+        android:id="@+id/listView_dataitems"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="10dp"

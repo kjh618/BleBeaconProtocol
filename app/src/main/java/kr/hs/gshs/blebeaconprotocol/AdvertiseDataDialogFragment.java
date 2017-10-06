@@ -9,10 +9,8 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -59,17 +57,17 @@ public class AdvertiseDataDialogFragment extends DialogFragment {
         });
 
         // Data items list
-        ListView listViewData = (ListView) view.findViewById(R.id.listView_data);
-        final DataAdapter dataAdapter = new DataAdapter();
+        ListView listViewData = (ListView) view.findViewById(R.id.listView_dataitems);
+        final DataItemAdapter dataItemAdapter = new DataItemAdapter(getActivity().getApplicationContext(), LayoutInflater.from(getActivity()));
 
-        listViewData.setAdapter(dataAdapter);
+        listViewData.setAdapter(dataItemAdapter);
 
         listViewData.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                DataItem item = (DataItem) dataAdapter.getItem(position);
-                dataAdapter.removeItem(position);
-                dataAdapter.notifyDataSetChanged();
+                DataItem item = (DataItem) dataItemAdapter.getItem(position);
+                dataItemAdapter.removeItem(position);
+                dataItemAdapter.notifyDataSetChanged();
 
                 Toast.makeText(getActivity().getApplicationContext(), "Item Removed: " + item.getType() + "/" + item.getData(), Toast.LENGTH_LONG).show();
             }
@@ -102,8 +100,8 @@ public class AdvertiseDataDialogFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 String enteredData = editTextData.getText().toString();
-                dataAdapter.addItem(new DataItem(selectedType, enteredData));
-                dataAdapter.notifyDataSetChanged();
+                dataItemAdapter.addItem(new DataItem(selectedType, enteredData));
+                dataItemAdapter.notifyDataSetChanged();
 
                 Toast.makeText(getActivity().getApplicationContext(), "Item Added: " + selectedType + "/" + enteredData, Toast.LENGTH_LONG).show();
             }
@@ -117,9 +115,9 @@ public class AdvertiseDataDialogFragment extends DialogFragment {
                 Intent data = new Intent();
                 data.putExtra("packet_type", selectedPacketType);
 
-                ArrayList<DataItem> temp = new ArrayList<DataItem>(dataAdapter.getCount());
-                for(int i=0; i<dataAdapter.getCount(); ++i)
-                    temp.add((DataItem) dataAdapter.getItem(i));
+                ArrayList<DataItem> temp = new ArrayList<DataItem>(dataItemAdapter.getCount());
+                for(int i = 0; i< dataItemAdapter.getCount(); ++i)
+                    temp.add((DataItem) dataItemAdapter.getItem(i));
 
                 data.putParcelableArrayListExtra("data_items", temp);
 
@@ -130,42 +128,5 @@ public class AdvertiseDataDialogFragment extends DialogFragment {
         });
 
         return builder.create();
-    }
-
-    class DataAdapter extends BaseAdapter {
-        ArrayList<DataItem> items = new ArrayList<DataItem>();
-
-        @Override
-        public int getCount() {
-            return items.size();
-        }
-
-        public void addItem(DataItem item) {
-            items.add(item);
-        }
-
-        public void removeItem(int position) {
-            items.remove(position);
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return items.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup viewGroup) {
-            DataItemView view = new DataItemView(getActivity().getApplicationContext());
-            DataItem item = items.get(position);
-            view.setType(item.getType());
-            view.setData(item.getData());
-
-            return view;
-        }
     }
 }
