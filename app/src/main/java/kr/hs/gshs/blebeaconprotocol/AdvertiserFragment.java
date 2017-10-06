@@ -104,6 +104,7 @@ public class AdvertiserFragment extends Fragment implements View.OnClickListener
         mSwitch = (Switch) view.findViewById(R.id.advertise_switch);
         mSwitch.setOnClickListener(this);
 
+        // Call show when 'Data' button is pressed
         Button buttonData = (Button) view.findViewById(R.id.button_data);
         buttonData.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,14 +116,16 @@ public class AdvertiserFragment extends Fragment implements View.OnClickListener
         return view;
     }
 
+    // Show AdvertiseDataDialogFragment
     private static final int DIALOG_REQUEST_CODE = 1234;
 
     void show() {
-        DialogFragment dataFragment = new DataFragment();
+        DialogFragment dataFragment = new AdvertiseDataDialogFragment();
         dataFragment.setTargetFragment(this, DIALOG_REQUEST_CODE);
         dataFragment.show(getFragmentManager(), "dialog");
     }
 
+    // Get AdvertiseData from AdvertiseDataDialogFragment
     Intent result;
 
     @Override
@@ -131,6 +134,7 @@ public class AdvertiserFragment extends Fragment implements View.OnClickListener
 
         if (requestCode == DIALOG_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             result = data;
+            Toast.makeText(getActivity().getApplicationContext(), "Saved.", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -188,6 +192,7 @@ public class AdvertiserFragment extends Fragment implements View.OnClickListener
     /**
      * Starts BLE Advertising by starting {@code AdvertiserService}.
      */
+    // And sends AdvertiseData to AdvertiserService
     private void startAdvertising() {
         Intent intent = new Intent(getActivity(), AdvertiserService.class);
         intent.putExtra("packet_type", result.getStringExtra("packet_type"));

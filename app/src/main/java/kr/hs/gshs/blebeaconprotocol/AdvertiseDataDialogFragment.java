@@ -25,18 +25,21 @@ import java.util.ArrayList;
  * Created by kjh on 2017-10-05.
  */
 
-public class DataFragment extends DialogFragment {
+public class AdvertiseDataDialogFragment extends DialogFragment {
+    // Packet types and data types
     String[] packetTypes = {"Advertisement", "Coupon", "Information", "Others"};
     String[] types = {"Text", "URL", "Others"};
+
     String selectedPacketType, selectedType;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.fragment_data, null);
+        View view = inflater.inflate(R.layout.dialog_fragment_advertise_data, null);
         builder.setView(view);
 
+        // Packet type spinner
         Spinner spinnerPacketType = (Spinner) view.findViewById(R.id.spinner_packettype);
         ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, packetTypes);
         arrayAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -46,7 +49,8 @@ public class DataFragment extends DialogFragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
                 selectedPacketType = packetTypes[position];
-                Toast.makeText(getActivity().getApplicationContext(), selectedPacketType, Toast.LENGTH_LONG).show();
+
+                Toast.makeText(getActivity().getApplicationContext(), "Packet Type Selected: " + selectedPacketType, Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -54,6 +58,7 @@ public class DataFragment extends DialogFragment {
             }
         });
 
+        // Data items list
         ListView listViewData = (ListView) view.findViewById(R.id.listView_data);
         final DataAdapter dataAdapter = new DataAdapter();
 
@@ -63,10 +68,14 @@ public class DataFragment extends DialogFragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 DataItem item = (DataItem) dataAdapter.getItem(position);
-                Toast.makeText(getActivity().getApplicationContext(), item.getType() + " " + item.getData(), Toast.LENGTH_LONG).show();
+                dataAdapter.removeItem(position);
+                dataAdapter.notifyDataSetChanged();
+
+                Toast.makeText(getActivity().getApplicationContext(), "Item Removed: " + item.getType() + "/" + item.getData(), Toast.LENGTH_LONG).show();
             }
         });
 
+        // Data type spinner
         Spinner spinnerType = (Spinner) view.findViewById(R.id.spinner_type);
         ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, types);
         arrayAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -76,6 +85,8 @@ public class DataFragment extends DialogFragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
                 selectedType = types[position];
+
+                Toast.makeText(getActivity().getApplicationContext(), "Data Type Selected: " + selectedType, Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -83,17 +94,22 @@ public class DataFragment extends DialogFragment {
             }
         });
 
-        Button buttonAdd = (Button) view.findViewById(R.id.button_add);
+        // Data editor and add button
         final EditText editTextData = (EditText) view.findViewById(R.id.editText_data);
+        Button buttonAdd = (Button) view.findViewById(R.id.button_add);
 
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dataAdapter.addItem(new DataItem(selectedType, editTextData.getText().toString()));
+                String enteredData = editTextData.getText().toString();
+                dataAdapter.addItem(new DataItem(selectedType, enteredData));
                 dataAdapter.notifyDataSetChanged();
+
+                Toast.makeText(getActivity().getApplicationContext(), "Item Added: " + selectedType + "/" + enteredData, Toast.LENGTH_LONG).show();
             }
         });
 
+        // Save button
         final Button buttonSave = (Button) view.findViewById(R.id.button_save);
 
         buttonSave.setOnClickListener(new View.OnClickListener() {
@@ -126,6 +142,10 @@ public class DataFragment extends DialogFragment {
 
         public void addItem(DataItem item) {
             items.add(item);
+        }
+
+        public void removeItem(int position) {
+            items.remove(position);
         }
 
         @Override

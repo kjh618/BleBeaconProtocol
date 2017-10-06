@@ -63,11 +63,13 @@ public class AdvertiserService extends Service {
         super.onCreate();
     }
 
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if(intent == null) {
             return Service.START_STICKY;
         } else {
+            // Get and process AdvertiseData from AdvertiserFragment
             processIntent(intent);
 
             running = true;
@@ -82,12 +84,14 @@ public class AdvertiserService extends Service {
     String packetType;
     DataItem[] dataItems = new DataItem[1];
 
+    // Generate raw AdvertiseData bytes
     byte[] rawBytes = new byte[26];
 
     private void GenerateRawAdvertiseData() {
         // complete this method
     }
 
+    // Process AdvertiseData from AdvertiseFragment
     private void processIntent(Intent intent) {
         packetType = intent.getStringExtra("packet_type");
         ArrayList<DataItem> temp = intent.getParcelableArrayListExtra("data_items");
@@ -219,6 +223,7 @@ public class AdvertiserService extends Service {
          *  onStartFailure() method of an AdvertiseCallback implementation.
          */
 
+        // Build actual AdvertiseData
         int part1 = 256 * rawBytes[1] + rawBytes[0];
         byte[] part2 = new byte[24];
         System.arraycopy(rawBytes, 2, part2, 0, rawBytes.length - 2);
