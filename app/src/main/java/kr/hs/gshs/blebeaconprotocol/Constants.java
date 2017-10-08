@@ -35,4 +35,11 @@ public class Constants {
 
     public static final int REQUEST_ENABLE_BT = 1;
 
+    public enum PacketTypes {
+        INFORMATION, ADVERTISEMENT, COUPON, CAUTION
+    }
+    public enum DataTypes {
+        TEXT_UNCOMPRESSED, TEXT_RUN_LENGTH_ENCODING, TEXT_HUFFMAN_CODING, REGULAR_URL, GOOGL_URL, DEVICE_NAME, SERVICE_NAME
+    }
+
 }

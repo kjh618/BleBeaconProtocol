@@ -81,18 +81,11 @@ public class AdvertiserService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    String packetType;
-    DataItem[] dataItems = new DataItem[1];
-
     // Generate raw AdvertiseData bytes
     byte[] rawBytes = new byte[26];
+    String packetType;
 
-    public enum PacketTypes {
-        INFORMATION, ADVERTISEMENT, COUPON, CAUTION
-    }
-    public enum DataTypes {
-        TEXT_UNCOMPRESSED, TEXT_RUN_LENGTH_ENCODING, TEXT_HUFFMAN_CODING, REGULAR_URL, GOOGL_URL, DEVICE_NAME, SERVICE_NAME
-    }
+    DataItem[] dataItems;
 
     private void GenerateRawAdvertiseData() {
         int totalDataLength = 0;
@@ -102,14 +95,14 @@ public class AdvertiserService extends Service {
         if (totalDataLength > 25) {
             Toast.makeText(getApplicationContext(), "Input Range Exceeded.", Toast.LENGTH_LONG).show();
         } else {
-            PacketTypes packettype = PacketTypes.valueOf(packetType);
+            Constants.PacketTypes packettype = Constants.PacketTypes.valueOf(packetType);
             rawBytes[0] = (byte) packettype.ordinal();
 
             int j = 0;
             for (int i = 0; i < dataItems.length; i++) {
                 rawBytes[1 + j] = (byte) dataItems[i].getLength();
 
-                DataTypes datatype = DataTypes.valueOf(dataItems[i].getType());
+                Constants.DataTypes datatype = Constants.DataTypes.valueOf(dataItems[i].getType());
                 rawBytes[2 + j] = (byte) datatype.ordinal();
 
                 byte[] dataBytes = dataItems[i].getData().getBytes();

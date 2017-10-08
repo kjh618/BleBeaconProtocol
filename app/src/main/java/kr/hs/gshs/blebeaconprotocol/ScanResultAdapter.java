@@ -16,7 +16,6 @@
 
 package kr.hs.gshs.blebeaconprotocol;
 
-import android.bluetooth.le.ScanRecord;
 import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.os.SystemClock;
@@ -62,6 +61,16 @@ public class ScanResultAdapter extends BaseAdapter {
         return mArrayList.get(position).getDevice().getAddress().hashCode();
     }
 
+    // Parse scan result
+    byte[] rawBytes;
+
+    String packetType;
+    DataItem[] dataItems = new DataItem[10];
+
+    private void ParseScanResult() {
+        // complete this method
+    }
+
     @Override
     public View getView(int position, View view, ViewGroup parent) {
 
@@ -75,8 +84,7 @@ public class ScanResultAdapter extends BaseAdapter {
 
         ScanResult scanResult = mArrayList.get(position);
 
-        ScanRecord scanRecord = scanResult.getScanRecord();
-        byte[] rawBytes = scanRecord.getBytes();
+        rawBytes = scanResult.getScanRecord().getBytes();
         String rawBytesString = "";
         for(byte bt : rawBytes)
             rawBytesString += String.valueOf((int) bt) + " ";
