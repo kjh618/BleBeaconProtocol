@@ -155,8 +155,11 @@ public class ScannerFragment extends ListFragment {
 
         if (requestCode == DIALOG_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             ArrayList<String> blockedPacketTypes = data.getStringArrayListExtra("filter");
+
+            isBlocked = new boolean[Constants.toPacketType.length];
             for(String blt : blockedPacketTypes)
                 isBlocked[Constants.PacketTypes.valueOf(blt).ordinal()] = true;
+
             Toast.makeText(getActivity().getApplicationContext(), "Saved.", Toast.LENGTH_LONG).show();
         }
     }
