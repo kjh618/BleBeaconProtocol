@@ -22,11 +22,16 @@ import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+
+import static kr.hs.gshs.blebeaconprotocol.Constants.toDataType;
+import static kr.hs.gshs.blebeaconprotocol.Constants.toPacketType;
 
 /**
  * Holds and displays {@link ScanResult}s, used by {@link ScannerFragment}.
@@ -65,10 +70,39 @@ public class ScanResultAdapter extends BaseAdapter {
     byte[] rawBytes = new byte[26];
 
     String packetType;
-    DataItem[] dataItems = new DataItem[10];
+    DataItem[] tempDataItems = new DataItem[10];
+    DataItem[] dataItems;
 
     private void ParseScanResult() {
-        // complete this method
+        packetType = toPacketType[rawBytes[0]];
+
+        int currentByte = 1, i;
+        for(i = 0; i < 10; i++)
+        {
+            if(currentByte >= rawBytes.length || rawBytes[currentByte] == 0)
+                break;
+
+            //tempDataItems[i].length = rawBytes[currentByte];
+            int currentLength = rawBytes[currentByte];
+            currentByte++;
+            //tempDataItems[i].type = toDataType[rawBytes[currentByte]];
+            String currentType = toDataType[rawBytes[currentByte]];
+            currentByte++;
+
+            byte[] byteToString = new byte[currentLength - 1];
+            for(int j = 0; j < currentLength - 1; j++){
+                byteToString[j] = rawBytes[currentByte];
+                currentByte ++;
+            }
+            //tempDataItems[i].data = new String(byteToString);
+            String currentData = new String(byteToString);
+
+            tempDataItems[i] = new DataItem(currentType, currentData);
+        }
+
+        dataItems = new DataItem[i];
+        for(i=0; i<dataItems.length; ++i)
+            dataItems[i] = tempDataItems[i];
     }
 
     @Override
@@ -83,13 +117,26 @@ public class ScanResultAdapter extends BaseAdapter {
         TextView textViewLastSeen = (TextView) view.findViewById(R.id.last_seen);
 
         ScanResult scanResult = mArrayList.get(position);
-
         System.arraycopy(scanResult.getScanRecord().getBytes(), 5, rawBytes, 0, 26);
-        String rawBytesString = "Raw Bytes: 0x";
-        for(byte bt : rawBytes)
-            rawBytesString += String.format("%02X", bt);
+        ParseScanResult();
 
-        textViewPacketType.setText(rawBytesString);
+        textViewPacketType.setText(packetType);
+
+        ListView listViewScanData = (ListView) view.findViewById(R.id.listView_scandataitems);
+        final DataItemAdapter scanDataItemAdapter = new DataItemAdapter(view.getContext(), LayoutInflater.from(view.getContext()));
+
+        listViewScanData.setAdapter(scanDataItemAdapter);
+
+        for(DataItem di : dataItems)
+            scanDataItemAdapter.addItem(di);
+        scanDataItemAdapter.notifyDataSetChanged();
+
+        listViewScanData.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+            }
+        });
+
         textViewLastSeen.setText(getTimeSinceString(mContext, scanResult.getTimestampNanos()));
 
         return view;
