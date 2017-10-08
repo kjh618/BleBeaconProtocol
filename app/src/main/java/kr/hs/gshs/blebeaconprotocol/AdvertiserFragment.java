@@ -104,6 +104,8 @@ public class AdvertiserFragment extends Fragment implements View.OnClickListener
         mSwitch = (Switch) view.findViewById(R.id.advertise_switch);
         mSwitch.setOnClickListener(this);
 
+        show();
+
         // Call show when 'Data' button is pressed
         Button buttonData = (Button) view.findViewById(R.id.button_data);
         buttonData.setOnClickListener(new View.OnClickListener() {

@@ -109,9 +109,9 @@ public class ScanResultAdapter extends BaseAdapter {
     public View getView(int position, View view, ViewGroup parent) {
 
         // Reuse an old view if we can, otherwise create a new one.
-        /*if (view == null) {*/
+        if (view == null) {
             view = mInflater.inflate(R.layout.listitem_scanresult, null);
-        /*}*/
+        }
 
         TextView textViewPacketType = (TextView) view.findViewById(R.id.packet_type);
         TextView textViewLastSeen = (TextView) view.findViewById(R.id.last_seen);
@@ -120,7 +120,8 @@ public class ScanResultAdapter extends BaseAdapter {
         System.arraycopy(scanResult.getScanRecord().getBytes(), 5, rawBytes, 0, 26);
         ParseScanResult();
 
-        textViewPacketType.setText(packetType);
+        String text = packetType + (ScannerFragment.isBlocked[Constants.PacketTypes.valueOf(packetType).ordinal()]? " (BLOCKED)" : "" );
+        textViewPacketType.setText(text);
 
         ListView listViewScanData = (ListView) view.findViewById(R.id.listView_scandataitems);
         final DataItemAdapter scanDataItemAdapter = new DataItemAdapter(view.getContext(), LayoutInflater.from(view.getContext()));
@@ -186,7 +187,7 @@ public class ScanResultAdapter extends BaseAdapter {
      * description of how long ago that was.
      */
     public static String getTimeSinceString(Context context, long timeNanoseconds) {
-        String lastSeenText = context.getResources().getString(R.string.last_seen) + " ";
+        String lastSeenText = "";
 
         long timeSince = SystemClock.elapsedRealtimeNanos() - timeNanoseconds;
         long secondsSince = TimeUnit.SECONDS.convert(timeSince, TimeUnit.NANOSECONDS);

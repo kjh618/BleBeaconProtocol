@@ -146,15 +146,17 @@ public class ScannerFragment extends ListFragment {
         scanFilterDialogFragment.show(getFragmentManager(), "dialog");
     }
 
-    // Get filters from ScanFilterDialogFragment
-    Intent result;
+    // Get blocked packet types from ScanFilterDialogFragment
+    public static boolean[] isBlocked = new boolean[Constants.toPacketType.length];
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == DIALOG_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            result = data;
+            ArrayList<String> blockedPacketTypes = data.getStringArrayListExtra("filter");
+            for(String blt : blockedPacketTypes)
+                isBlocked[Constants.PacketTypes.valueOf(blt).ordinal()] = true;
             Toast.makeText(getActivity().getApplicationContext(), "Saved.", Toast.LENGTH_LONG).show();
         }
     }
