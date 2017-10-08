@@ -87,8 +87,12 @@ public class AdvertiserService extends Service {
     // Generate raw AdvertiseData bytes
     byte[] rawBytes = new byte[26];
 
-    public enum PacketTypes {INFORMATION, ADVERTISEMENT, COUPON, CAUTION}
-    public enum DataTypes {TEXT_RLE, TEXT_HOF, TEXT_UNCOM, URL, GOOGL_URL, DEVICE_NAME, SERVICE_NAME}
+    public enum PacketTypes {
+        INFORMATION, ADVERTISEMENT, COUPON, CAUTION
+    }
+    public enum DataTypes {
+        TEXT_UNCOMPRESSED, TEXT_RUN_LENGTH_ENCODING, TEXT_HUFFMAN_CODING, REGULAR_URL, GOOGL_URL, DEVICE_NAME, SERVICE_NAME
+    }
 
     private void GenerateRawAdvertiseData() {
         int totalDataLength = 0;
