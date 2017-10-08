@@ -16,14 +16,17 @@
 
 package kr.hs.gshs.blebeaconprotocol;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -126,8 +129,33 @@ public class ScannerFragment extends ListFragment {
             case R.id.refresh:
                 startScanning();
                 return true;
+            case R.id.menu_filter:
+                show();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    // Show ScanFilterDialogFragment
+    private static final int DIALOG_REQUEST_CODE = 1235;
+
+    void show() {
+        DialogFragment scanFilterDialogFragment = new ScanFilterDialogFragment();
+        scanFilterDialogFragment.setTargetFragment(this, DIALOG_REQUEST_CODE);
+        scanFilterDialogFragment.show(getFragmentManager(), "dialog");
+    }
+
+    // Get filters from ScanFilterDialogFragment
+    Intent result;
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == DIALOG_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            result = data;
+            Toast.makeText(getActivity().getApplicationContext(), "Saved.", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -181,8 +209,10 @@ public class ScannerFragment extends ListFragment {
 
         ScanFilter.Builder builder = new ScanFilter.Builder();
         // Comment out the below line to see all BLE devices around you
-        builder.setServiceUuid(Constants.Service_UUID);
+        /*builder.setServiceUuid(Constants.Service_UUID);*/
         scanFilters.add(builder.build());
+
+        Log.d(TAG, "buildScanFilters() called.");
 
         return scanFilters;
     }
@@ -193,6 +223,9 @@ public class ScannerFragment extends ListFragment {
     private ScanSettings buildScanSettings() {
         ScanSettings.Builder builder = new ScanSettings.Builder();
         builder.setScanMode(ScanSettings.SCAN_MODE_LOW_POWER);
+
+        Log.d(TAG, "buildScanSettings() called.");
+
         return builder.build();
     }
 
@@ -205,6 +238,8 @@ public class ScannerFragment extends ListFragment {
         public void onBatchScanResults(List<ScanResult> results) {
             super.onBatchScanResults(results);
 
+            Log.d(TAG, "onBatchScanResult(.) called.");
+
             for (ScanResult result : results) {
                 mAdapter.add(result);
             }
@@ -214,6 +249,8 @@ public class ScannerFragment extends ListFragment {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
+
+            Log.d(TAG, "onScanResult(..) called.");
 
             mAdapter.add(result);
             mAdapter.notifyDataSetChanged();

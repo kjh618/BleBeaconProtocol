@@ -58,11 +58,11 @@ public class ScanResultAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return mArrayList.get(position).getDevice().getAddress().hashCode();
+        return position;
     }
 
     // Parse scan result
-    byte[] rawBytes;
+    byte[] rawBytes = new byte[26];
 
     String packetType;
     DataItem[] dataItems = new DataItem[10];
@@ -75,19 +75,19 @@ public class ScanResultAdapter extends BaseAdapter {
     public View getView(int position, View view, ViewGroup parent) {
 
         // Reuse an old view if we can, otherwise create a new one.
-        if (view == null) {
+        /*if (view == null) {*/
             view = mInflater.inflate(R.layout.listitem_scanresult, null);
-        }
+        /*}*/
 
         TextView textViewPacketType = (TextView) view.findViewById(R.id.packet_type);
         TextView textViewLastSeen = (TextView) view.findViewById(R.id.last_seen);
 
         ScanResult scanResult = mArrayList.get(position);
 
-        rawBytes = scanResult.getScanRecord().getBytes();
-        String rawBytesString = "";
+        System.arraycopy(scanResult.getScanRecord().getBytes(), 5, rawBytes, 0, 26);
+        String rawBytesString = "Raw Bytes: 0x";
         for(byte bt : rawBytes)
-            rawBytesString += String.valueOf((int) bt) + " ";
+            rawBytesString += String.format("%02X", bt);
 
         textViewPacketType.setText(rawBytesString);
         textViewLastSeen.setText(getTimeSinceString(mContext, scanResult.getTimestampNanos()));
@@ -98,7 +98,7 @@ public class ScanResultAdapter extends BaseAdapter {
     /**
      * Search the adapter for an existing device address and return it, otherwise return -1.
      */
-    private int getPosition(String address) {
+    /*private int getPosition(String address) {
         int position = -1;
         for (int i = 0; i < mArrayList.size(); i++) {
             if (mArrayList.get(i).getDevice().getAddress().equals(address)) {
@@ -107,7 +107,7 @@ public class ScanResultAdapter extends BaseAdapter {
             }
         }
         return position;
-    }
+    }*/
 
 
     /**
@@ -116,15 +116,15 @@ public class ScanResultAdapter extends BaseAdapter {
      */
     public void add(ScanResult scanResult) {
 
-        int existingPosition = getPosition(scanResult.getDevice().getAddress());
+        /*int existingPosition = getPosition(scanResult.getDevice().getAddress());
 
         if (existingPosition >= 0) {
             // Device is already in list, update its record.
             mArrayList.set(existingPosition, scanResult);
-        } else {
+        } else {*/
             // Add new Device's ScanResult to list.
-            mArrayList.add(scanResult);
-        }
+        mArrayList.add(scanResult);
+        /*}*/
     }
 
     /**

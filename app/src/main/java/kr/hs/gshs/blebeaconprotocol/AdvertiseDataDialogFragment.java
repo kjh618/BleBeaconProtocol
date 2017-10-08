@@ -24,9 +24,6 @@ import java.util.ArrayList;
  */
 
 public class AdvertiseDataDialogFragment extends DialogFragment {
-    // Packet types and data types
-    String[] packetTypes = {"Advertisement", "Coupon", "Information", "Others"};
-    String[] types = {"Text", "URL", "Others"};
 
     String selectedPacketType, selectedType;
 
@@ -39,14 +36,14 @@ public class AdvertiseDataDialogFragment extends DialogFragment {
 
         // Packet type spinner
         Spinner spinnerPacketType = (Spinner) view.findViewById(R.id.spinner_packettype);
-        ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, packetTypes);
+        ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, Constants.toPacketType);
         arrayAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerPacketType.setAdapter(arrayAdapter1);
 
         spinnerPacketType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-                selectedPacketType = packetTypes[position];
+                selectedPacketType = Constants.toPacketType[position];
 
                 Toast.makeText(getActivity().getApplicationContext(), "Packet Type Selected: " + selectedPacketType, Toast.LENGTH_LONG).show();
             }
@@ -75,14 +72,14 @@ public class AdvertiseDataDialogFragment extends DialogFragment {
 
         // Data type spinner
         Spinner spinnerType = (Spinner) view.findViewById(R.id.spinner_type);
-        ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, types);
+        ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, Constants.toDataType);
         arrayAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerType.setAdapter(arrayAdapter2);
 
         spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-                selectedType = types[position];
+                selectedType = Constants.toDataType[position];
 
                 Toast.makeText(getActivity().getApplicationContext(), "Data Type Selected: " + selectedType, Toast.LENGTH_LONG).show();
             }

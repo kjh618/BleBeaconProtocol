@@ -18,6 +18,8 @@ package kr.hs.gshs.blebeaconprotocol;
 
 import android.os.ParcelUuid;
 
+import static android.bluetooth.BluetoothClass.Service.INFORMATION;
+
 /**
  * Constants for use in the Bluetooth Advertisements sample
  */
@@ -42,4 +44,21 @@ public class Constants {
         TEXT_UNCOMPRESSED, TEXT_RUN_LENGTH_ENCODING, TEXT_HUFFMAN_CODING, REGULAR_URL, GOOGL_URL, DEVICE_NAME, SERVICE_NAME
     }
 
+    public static final String[] toPacketType, toDataType;
+
+    static {
+        PacketTypes[] pts = PacketTypes.values();
+        toPacketType = new String[pts.length];
+        int i = 0;
+        for(PacketTypes pt : pts) {
+            toPacketType[i++] = pt.name();
+        }
+
+        DataTypes[] dts = DataTypes.values();
+        toDataType = new String[dts.length];
+        i = 0;
+        for(DataTypes dt : dts) {
+            toDataType[i++] = dt.name();
+        }
+    }
 }

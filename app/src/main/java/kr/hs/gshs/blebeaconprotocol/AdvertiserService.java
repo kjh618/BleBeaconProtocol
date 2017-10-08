@@ -85,7 +85,7 @@ public class AdvertiserService extends Service {
     byte[] rawBytes = new byte[26];
     String packetType;
 
-    DataItem[] dataItems;
+    DataItem[] dataItems = new DataItem[0];
 
     private void GenerateRawAdvertiseData() {
         int totalDataLength = 0;

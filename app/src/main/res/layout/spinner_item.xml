@@ -6,4 +6,6 @@
     android:layout_height="wrap_content"
     android:textSize="16dp"
     android:textColor="#404040"
+    android:maxLines="1"
+    android:ellipsize="end"
     />
