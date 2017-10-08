@@ -104,8 +104,6 @@ public class AdvertiserFragment extends Fragment implements View.OnClickListener
         mSwitch = (Switch) view.findViewById(R.id.advertise_switch);
         mSwitch.setOnClickListener(this);
 
-        show();
-
         // Call show when 'Data' button is pressed
         Button buttonData = (Button) view.findViewById(R.id.button_data);
         buttonData.setOnClickListener(new View.OnClickListener() {
@@ -196,6 +194,10 @@ public class AdvertiserFragment extends Fragment implements View.OnClickListener
      */
     // And sends AdvertiseData to AdvertiserService
     private void startAdvertising() {
+        if(result == null) {
+            Toast.makeText(getActivity().getApplicationContext(), "Please set data.", Toast.LENGTH_LONG).show();
+            return;
+        }
         Intent intent = new Intent(getActivity(), AdvertiserService.class);
         intent.putExtra("packet_type", result.getStringExtra("packet_type"));
         intent.putParcelableArrayListExtra("data_items", result.getParcelableArrayListExtra("data_items"));

@@ -176,6 +176,9 @@ public class ScannerFragment extends ListFragment {
                 }
             }, SCAN_PERIOD);
 
+            mAdapter.clear();
+            mAdapter.notifyDataSetChanged();
+
             // Kick off a new scan.
             mScanCallback = new SampleScanCallback();
             mBluetoothLeScanner.startScan(buildScanFilters(), buildScanSettings(), mScanCallback);
