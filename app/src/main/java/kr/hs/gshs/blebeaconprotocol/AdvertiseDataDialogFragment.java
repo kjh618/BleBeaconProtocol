@@ -45,7 +45,7 @@ public class AdvertiseDataDialogFragment extends DialogFragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
                 selectedPacketType = Constants.toPacketType[position];
 
-                Toast.makeText(getActivity().getApplicationContext(), "Packet Type Selected: " + selectedPacketType, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity().getApplicationContext(), "Packet Type Selected: " + selectedPacketType, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -66,7 +66,7 @@ public class AdvertiseDataDialogFragment extends DialogFragment {
                 dataItemAdapter.removeItem(position);
                 dataItemAdapter.notifyDataSetChanged();
 
-                Toast.makeText(getActivity().getApplicationContext(), "Item Removed: " + item.getType() + "/" + item.getData(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity().getApplicationContext(), "Item Removed: " + item.getType() + "/" + item.getData(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -81,7 +81,7 @@ public class AdvertiseDataDialogFragment extends DialogFragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
                 selectedType = Constants.toDataType[position];
 
-                Toast.makeText(getActivity().getApplicationContext(), "Data Type Selected: " + selectedType, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity().getApplicationContext(), "Data Type Selected: " + selectedType, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -100,7 +100,7 @@ public class AdvertiseDataDialogFragment extends DialogFragment {
                 dataItemAdapter.addItem(new DataItem(selectedType, enteredData));
                 dataItemAdapter.notifyDataSetChanged();
 
-                Toast.makeText(getActivity().getApplicationContext(), "Item Added: " + selectedType + "/" + enteredData, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity().getApplicationContext(), "Item Added: " + selectedType + "/" + enteredData, Toast.LENGTH_SHORT).show();
             }
         });
 

@@ -42,7 +42,7 @@ public class ScanFilterDialogFragment extends DialogFragment {
         listViewFilters.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Toast.makeText(getActivity().getApplicationContext(), "Item Removed: " + filterAdapter.getItem(position), Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity().getApplicationContext(), "Item Removed: " + filterAdapter.getItem(position), Toast.LENGTH_SHORT).show();
 
                 filterAdapter.removeItem(position);
                 filterAdapter.notifyDataSetChanged();
@@ -60,7 +60,7 @@ public class ScanFilterDialogFragment extends DialogFragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
                 selectedPacketType = toPacketType[position];
 
-                Toast.makeText(getActivity().getApplicationContext(), "Filter Selected: " + selectedPacketType, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity().getApplicationContext(), "Filter Selected: " + selectedPacketType, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -77,7 +77,7 @@ public class ScanFilterDialogFragment extends DialogFragment {
                 filterAdapter.addItem(selectedPacketType);
                 filterAdapter.notifyDataSetChanged();
 
-                Toast.makeText(getActivity().getApplicationContext(), "Filter Added: " + selectedPacketType, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity().getApplicationContext(), "Filter Added: " + selectedPacketType, Toast.LENGTH_SHORT).show();
             }
         });
 
