@@ -76,7 +76,7 @@ public class ScanResultAdapter extends BaseAdapter {
     private DataItem[] dataItems;
 
     private void ParseScanResult() {
-        packetType = toPacketType[rawBytes[0]];
+        packetType = toPacketType[Math.max(0, Math.min(toPacketType.length-1, rawBytes[0]))];
 
         int currentByte = 1, i;
         for(i = 0; i < 10; i++)
