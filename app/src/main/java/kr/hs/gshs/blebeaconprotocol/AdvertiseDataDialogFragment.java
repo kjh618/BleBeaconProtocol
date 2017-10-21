@@ -20,6 +20,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 /**
+ * AdvertiseDataDialogFragment
  * Created by kjh on 2017-10-05.
  */
 

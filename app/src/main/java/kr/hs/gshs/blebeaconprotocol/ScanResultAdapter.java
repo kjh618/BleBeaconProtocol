@@ -18,6 +18,8 @@ package kr.hs.gshs.blebeaconprotocol;
 
 import android.bluetooth.le.ScanResult;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,11 +69,11 @@ public class ScanResultAdapter extends BaseAdapter {
     }
 
     // Parse scan result
-    byte[] rawBytes = new byte[26];
+    private byte[] rawBytes = new byte[26];
 
-    String packetType;
-    DataItem[] tempDataItems = new DataItem[10];
-    DataItem[] dataItems;
+    private String packetType;
+    private DataItem[] tempDataItems = new DataItem[10];
+    private DataItem[] dataItems;
 
     private void ParseScanResult() {
         packetType = toPacketType[rawBytes[0]];
@@ -135,6 +137,14 @@ public class ScanResultAdapter extends BaseAdapter {
         listViewScanData.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                DataItem di = (DataItem) scanDataItemAdapter.getItem(position);
+                if(di.getType().equals("REGULAR_URL") || di.getType().equals("GOOGL_URL")) {
+                    String url = di.getData();
+                    if(!url.startsWith("http://") || !url.startsWith("https://"))
+                        url = "http://" + url;
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    view.getContext().startActivity(intent);
+                }
             }
         });
 

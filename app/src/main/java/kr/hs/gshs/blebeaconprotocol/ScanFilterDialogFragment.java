@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import static kr.hs.gshs.blebeaconprotocol.Constants.toPacketType;
 
 /**
+ * ScanFilterDialogFragment
  * Created by kjh on 2017-10-05.
  */
 
@@ -27,13 +29,13 @@ public class ScanFilterDialogFragment extends DialogFragment {
     String selectedPacketType, selectedType;
 
     @Override
+    @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_fragment_scan_filter, null);
         builder.setView(view);
 
-        //
         ListView listViewFilters = (ListView) view.findViewById(R.id.listView_filters);
         final FilterAdapter filterAdapter = new FilterAdapter(getActivity().getApplicationContext(), LayoutInflater.from(getActivity()));
 
@@ -49,7 +51,6 @@ public class ScanFilterDialogFragment extends DialogFragment {
             }
         });
 
-        //
         Spinner spinnerFilter = (Spinner) view.findViewById(R.id.spinner_filter);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, toPacketType);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -68,7 +69,6 @@ public class ScanFilterDialogFragment extends DialogFragment {
             }
         });
 
-        // Data editor and add button
         Button buttonAdd2 = (Button) view.findViewById(R.id.button_add2);
 
         buttonAdd2.setOnClickListener(new View.OnClickListener() {

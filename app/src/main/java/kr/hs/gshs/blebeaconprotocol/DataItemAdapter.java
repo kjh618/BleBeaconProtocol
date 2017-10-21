@@ -10,13 +10,14 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 /**
+ * DataItemAdapter
  * Created by kjh on 2017-10-06.
  */
 
 public class DataItemAdapter extends BaseAdapter{
-    ArrayList<DataItem> items;
-    Context mContext;
-    LayoutInflater mInflater;
+    private ArrayList<DataItem> items;
+    private Context mContext;
+    private LayoutInflater mInflater;
 
     DataItemAdapter(Context context, LayoutInflater inflater) {
         super();
@@ -55,8 +56,8 @@ public class DataItemAdapter extends BaseAdapter{
         TextView textViewType = (TextView) view.findViewById(R.id.textView_type);
         TextView textViewLength = (TextView) view.findViewById(R.id.textView_length);
         TextView textViewData = (TextView) view.findViewById(R.id.textView_data);
-
         DataItem item = items.get(position);
+
         textViewType.setText(item.getType());
         textViewData.setText(item.getData());
         textViewLength.setText(String.valueOf(item.getLength()));

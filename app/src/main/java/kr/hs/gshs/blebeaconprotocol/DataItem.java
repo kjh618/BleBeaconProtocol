@@ -4,12 +4,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
+ * DataItem
  * Created by kjh on 2017-10-05.
  */
 
 public class DataItem implements Parcelable{
-    int length;
-    String type, data;
+    private int length;
+    private String type, data;
 
     public DataItem(String type, String data) {
         this.type = type;

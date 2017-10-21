@@ -82,33 +82,31 @@ public class AdvertiserService extends Service {
     }
 
     // Generate raw AdvertiseData bytes
-    byte[] rawBytes = new byte[26];
-    String packetType;
+    private byte[] rawBytes = new byte[26];
+    private String packetType;
 
-    DataItem[] dataItems = new DataItem[0];
+    private DataItem[] dataItems = new DataItem[0];
 
     private void GenerateRawAdvertiseData() {
         int totalDataLength = 0;
-        for (int i = 0; i < dataItems.length; i++)
-            totalDataLength += dataItems[i].getLength() + 1;
+        for(DataItem di : dataItems)
+            totalDataLength += di.getLength() + 1;
 
         if (totalDataLength > 25) {
             Toast.makeText(getApplicationContext(), "Input Range Exceeded.", Toast.LENGTH_LONG).show();
         } else {
-            Constants.PacketTypes packettype = Constants.PacketTypes.valueOf(packetType);
-            rawBytes[0] = (byte) packettype.ordinal();
+            rawBytes[0] = (byte) Constants.PacketTypes.valueOf(packetType).ordinal();
 
             int j = 0;
-            for (int i = 0; i < dataItems.length; i++) {
-                rawBytes[1 + j] = (byte) dataItems[i].getLength();
+            for(DataItem di : dataItems) {
+                rawBytes[1 + j] = (byte) di.getLength();
 
-                Constants.DataTypes datatype = Constants.DataTypes.valueOf(dataItems[i].getType());
-                rawBytes[2 + j] = (byte) datatype.ordinal();
+                rawBytes[2 + j] = (byte) Constants.DataTypes.valueOf(di.getType()).ordinal();
 
-                byte[] dataBytes = dataItems[i].getData().getBytes();
-                for (int k = 0; k < dataItems[i].getLength() - 1; k++)
+                byte[] dataBytes = di.getData().getBytes();
+                for (int k = 0; k < di.getLength() - 1; k++)
                     rawBytes[3 + j + k] = dataBytes[k];
-                j += dataItems[i].getLength() + 1;
+                j += di.getLength() + 1;
             }
         }
     }
@@ -120,14 +118,14 @@ public class AdvertiserService extends Service {
         dataItems = temp.toArray(dataItems);
         GenerateRawAdvertiseData();
     }
-
+    
+    /**
+     * Note that onDestroy is not guaranteed to be called quickly or at all. Services exist at
+     * the whim of the system, and onDestroy can be delayed or skipped entirely if memory need
+     * is critical.
+     */
     @Override
     public void onDestroy() {
-        /**
-         * Note that onDestroy is not guaranteed to be called quickly or at all. Services exist at
-         * the whim of the system, and onDestroy can be delayed or skipped entirely if memory need
-         * is critical.
-         */
         running = false;
         stopAdvertising();
         mHandler.removeCallbacks(timeoutRunnable);
@@ -229,28 +227,24 @@ public class AdvertiserService extends Service {
             mAdvertiseCallback = null;
         }
     }
-
+    
     /**
      * Returns an AdvertiseData object which includes the Service UUID and Device Name.
+     * 
+     * Note: There is a strict limit of 31 Bytes on packets sent over BLE Advertisements.
+     *  This includes everything put into AdvertiseData including UUIDs, device info, &
+     *  arbitrary service or manufacturer data.
+     *  Attempting to send packets over this limit will result in a failure with error code
+     *  AdvertiseCallback.ADVERTISE_FAILED_DATA_TOO_LARGE. Catch this error in the
+     *  onStartFailure() method of an AdvertiseCallback implementation.
      */
     private AdvertiseData buildAdvertiseData() {
-
-        /**
-         * Note: There is a strict limit of 31 Bytes on packets sent over BLE Advertisements.
-         *  This includes everything put into AdvertiseData including UUIDs, device info, &
-         *  arbitrary service or manufacturer data.
-         *  Attempting to send packets over this limit will result in a failure with error code
-         *  AdvertiseCallback.ADVERTISE_FAILED_DATA_TOO_LARGE. Catch this error in the
-         *  onStartFailure() method of an AdvertiseCallback implementation.
-         */
-
         // Build actual AdvertiseData
         int part1 = 256 * rawBytes[1] + rawBytes[0];
         byte[] part2 = new byte[24];
         System.arraycopy(rawBytes, 2, part2, 0, rawBytes.length - 2);
         AdvertiseData.Builder dataBuilder = new AdvertiseData.Builder();
         dataBuilder.addManufacturerData(part1, part2);
-        //dataBuilder.addServiceData(Constants.Service_UUID, part2);
 
         /* For example - this will cause advertising to fail (exceeds size limit) */
         //String failureData = "asdghkajsghalkxcjhfa;sghtalksjcfhalskfjhasldkjfhdskf";
@@ -265,7 +259,7 @@ public class AdvertiserService extends Service {
      */
     private AdvertiseSettings buildAdvertiseSettings() {
         AdvertiseSettings.Builder settingsBuilder = new AdvertiseSettings.Builder();
-        settingsBuilder.setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_POWER);
+        settingsBuilder.setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY);
         settingsBuilder.setTimeout(0);
         return settingsBuilder.build();
     }

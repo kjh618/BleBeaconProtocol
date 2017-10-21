@@ -10,13 +10,14 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 /**
+ * FilterAdapter
  * Created by kjh on 2017-10-08.
  */
 
 public class FilterAdapter extends BaseAdapter {
     ArrayList<String> items;
-    Context mContext;
-    LayoutInflater mInflater;
+    private Context mContext;
+    private LayoutInflater mInflater;
 
     FilterAdapter(Context context, LayoutInflater inflater) {
         super();
