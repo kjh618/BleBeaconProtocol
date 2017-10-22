@@ -85,15 +85,15 @@ public class ScanResultAdapter extends BaseAdapter {
                 break;
 
             //tempDataItems[i].length = rawBytes[currentByte];
-            int currentLength = rawBytes[currentByte];
+            int currentLength = Math.max(0, Math.min(rawBytes.length-1, rawBytes[currentByte]));
             currentByte++;
             //tempDataItems[i].type = toDataType[rawBytes[currentByte]];
-            String currentType = toDataType[rawBytes[currentByte]];
+            String currentType = toDataType[Math.max(0, Math.min(toDataType.length-1, rawBytes[currentByte]))];
             currentByte++;
 
-            byte[] byteToString = new byte[currentLength - 1];
+            byte[] byteToString = new byte[Math.max(0, Math.min(rawBytes.length-1, currentLength - 1))];
             for(int j = 0; j < currentLength - 1; j++){
-                byteToString[j] = rawBytes[currentByte];
+                byteToString[j] = rawBytes[Math.max(0, Math.min(rawBytes.length-1, currentByte))];
                 currentByte ++;
             }
             //tempDataItems[i].data = new String(byteToString);
@@ -180,7 +180,7 @@ public class ScanResultAdapter extends BaseAdapter {
             // Device is already in list, update its record.
             mArrayList.set(existingPosition, scanResult);
         } else {*/
-            // Add new Device's ScanResult to list.
+        // Add new Device's ScanResult to list.
         mArrayList.add(scanResult);
         /*}*/
     }
